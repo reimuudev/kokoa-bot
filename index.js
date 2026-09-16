@@ -1,13 +1,13 @@
 import http from 'http';
-http.createServer((req, res) => res.end('Bot activo 24/7')).listen(process.env.PORT || 3000);
-
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import fetch from 'node-fetch';
-import process from 'node.process';
+
+// Servidor HTTP falso para mantener el Web Service activo en Render Free
+http.createServer((req, res) => res.end('Bot activo 24/7')).listen(process.env.PORT || 3000);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// 1. Definición de comandos de interacción, reacción y NSFW
+// 1. Comandos de interacción, reacción y NSFW
 const commands = [
   new SlashCommandBuilder()
     .setName('hug')
@@ -51,14 +51,13 @@ client.on('interactionCreate', async interaction => {
 
   const { commandName, options, channel } = interaction;
 
-  // Función auxiliar para obtener GIFs de la API Waifu.pics
   const getWaifuGif = async (type, category = 'sfw') => {
     const res = await fetch(`https://api.waifu.pics/${category}/${type}`);
     const data = await res.json();
     return data.url;
   };
 
-  // Comandos de Interacción (SFW)
+  // Comandos de Interacción
   if (['hug', 'kiss', 'pat'].includes(commandName)) {
     const target = options.getUser('usuario');
     const imageUrl = await getWaifuGif(commandName, 'sfw');
@@ -84,7 +83,7 @@ client.on('interactionCreate', async interaction => {
     return interaction.reply({ embeds: [embed] });
   }
 
-  // Comando NSFW con validación de canal
+  // Comando NSFW
   if (commandName === 'nsfw') {
     if (!channel.nsfw) {
       return interaction.reply({ 
