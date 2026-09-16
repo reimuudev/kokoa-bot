@@ -1,3 +1,6 @@
+import http from 'http';
+http.createServer((req, res) => res.end('Bot activo 24/7')).listen(process.env.PORT || 3000);
+
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import fetch from 'node-fetch';
 import process from 'node.process';
